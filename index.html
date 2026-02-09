@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My First Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Invitation</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: pink;
+            color: darkred;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            animation: heartBeat 1s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        button {
+            background: red;
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>Welcome to my website hosted on GitHub!</p>
+    <h1>💖 Be My Valentine? 💖</h1>
+    <p>Click the button to see your special Valentine's surprise!</p>
+    <button onclick="showMessage()">Click Me!</button>
+    <div id="message"></div>
+
+    <script>
+        const messages = [
+            "Roses are red, violets are blue, you're invited, and we want YOU! 🌹",
+            "Warning: Love overload ahead! 💘 RSVP ASAP!",
+            "Cupid says: 'Don't miss the fun, or I'll be sad!' 😢",
+            "Chocolate and laughter guaranteed. 🍫😂",
+            "Your presence is required for hugs and giggles! 🤗"
+        ];
+
+        function showMessage() {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            document.getElementById('message').innerText = messages[randomIndex];
+            document.body.style.background = `hsl(${Math.random()*360}, 70%, 80%)`; // fun background change
+        }
+    </script>
 </body>
 </html>
