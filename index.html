@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Catch My Heart 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Heart Catch Game 💖</title>
 <style>
 body {
     margin: 0;
@@ -23,11 +24,11 @@ body {
     left: 50%;
     transform: translateX(-50%);
     font-size: 50px;
-    cursor: pointer;
+    touch-action: none;
     transition: transform 0.1s;
 }
 
-.heart {
+.heart, .trickHeart {
     position: absolute;
     font-size: 30px;
     animation: fall linear;
@@ -38,12 +39,17 @@ body {
     100% { transform: translateY(100vh); }
 }
 
-#score {
+#score, #levelDisplay {
     position: absolute;
     top: 20px;
     left: 20px;
-    font-size: 24px;
+    font-size: 22px;
     color: #ff1e56;
+}
+
+#levelDisplay {
+    left: auto;
+    right: 20px;
 }
 
 #message {
@@ -57,60 +63,79 @@ body {
     display: none;
 }
 
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 20px;
+    background: #ff4d6d;
+    color: white;
+    cursor: pointer;
+    margin-top: 15px;
+}
 </style>
 </head>
 <body>
 
 <div id="gameContainer">
     <div id="score">💖 Hearts: 0</div>
+    <div id="levelDisplay">Level: 1</div>
     <div id="player">💌</div>
-    <div id="message">
-        YAY! You caught all hearts! 😍💖<br>
-        Will You Be My Valentine? 💕
-        <br><img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="200">
-    </div>
+    <div id="message"></div>
 </div>
 
 <script>
-const player = document.getElementById("player");
 const container = document.getElementById("gameContainer");
+const player = document.getElementById("player");
 const scoreDisplay = document.getElementById("score");
+const levelDisplay = document.getElementById("levelDisplay");
 const message = document.getElementById("message");
 
 let score = 0;
+let level = 1;
 let hearts = [];
-const totalHearts = 10;
+let heartsToCatch = 5; // hearts per level
+let trickChance = 0.2; // 20% hearts are trick hearts
+let heartSpeed = 5; // base speed in seconds
 
-// Move player with mouse
-document.addEventListener("mousemove", (e) => {
-    player.style.left = e.clientX + "px";
+// Move player with touch or mouse
+function movePlayer(x) {
+    const maxX = window.innerWidth - 50;
+    const newX = Math.min(Math.max(x, 25), maxX);
+    player.style.left = newX + "px";
+}
+document.addEventListener("mousemove", (e) => movePlayer(e.clientX));
+document.addEventListener("touchmove", (e) => {
+    movePlayer(e.touches[0].clientX);
 });
 
-// Create hearts
+// Create a heart
 function createHeart() {
     const heart = document.createElement("div");
-    heart.classList.add("heart");
+    const isTrick = Math.random() < trickChance;
+    heart.classList.add(isTrick ? "trickHeart" : "heart");
+    heart.innerHTML = isTrick ? "💔" : "💖";
     heart.style.left = Math.random() * (window.innerWidth - 30) + "px";
     heart.style.top = "-50px";
-    heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-    heart.innerHTML = "💖";
+    const duration = heartSpeed + Math.random() * 3;
+    heart.style.animationDuration = duration + "s";
+
     container.appendChild(heart);
     hearts.push(heart);
 
-    // Remove heart after it falls
     setTimeout(() => {
         heart.remove();
         hearts = hearts.filter(h => h !== heart);
-        createHeart(); // keep hearts coming
-    }, parseFloat(heart.style.animationDuration) * 1000);
+        if (!isTrick) createHeart();
+    }, duration * 1000);
 }
 
-// Start hearts
-for (let i = 0; i < totalHearts; i++) {
-    createHeart();
+// Spawn hearts per level
+function spawnHearts(count) {
+    for (let i = 0; i < count; i++) createHeart();
 }
 
-// Check collision
+// Collision detection
 function checkCollision() {
     hearts.forEach((heart) => {
         const heartRect = heart.getBoundingClientRect();
@@ -120,14 +145,21 @@ function checkCollision() {
             heartRect.left > playerRect.right ||
             heartRect.bottom < playerRect.top ||
             heartRect.top > playerRect.bottom)) {
-            
+
+            if (heart.classList.contains("trickHeart")) {
+                // Trick heart disappears
+                heart.remove();
+                hearts = hearts.filter(h => h !== heart);
+                return;
+            }
+
             // Heart caught
             heart.remove();
             hearts = hearts.filter(h => h !== heart);
             score++;
             scoreDisplay.innerHTML = `💖 Hearts: ${score}`;
 
-            // Floating emoji effect
+            // Floating emojis
             const emoji = document.createElement("div");
             emoji.style.position = "absolute";
             emoji.style.left = heartRect.left + "px";
@@ -137,14 +169,40 @@ function checkCollision() {
             container.appendChild(emoji);
             setTimeout(() => emoji.remove(), 1000);
 
-            if (score >= totalHearts) {
-                message.style.display = "block";
+            if (score >= heartsToCatch) {
+                nextLevel();
             }
         }
     });
     requestAnimationFrame(checkCollision);
 }
 
+// Level up
+function nextLevel() {
+    hearts.forEach(h => h.remove());
+    hearts = [];
+    level++;
+    levelDisplay.innerHTML = `Level: ${level}`;
+    score = 0;
+    scoreDisplay.innerHTML = `💖 Hearts: 0`;
+    heartsToCatch += 2;
+    heartSpeed = Math.max(2, heartSpeed - 0.5);
+    trickChance = Math.min(0.5, trickChance + 0.05);
+
+    // Show celebration
+    message.innerHTML = `🎉 Level ${level-1} Complete! 🎉<br>
+        <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="200"><br>
+        Get ready for next level!`;
+    message.style.display = "block";
+
+    setTimeout(() => {
+        message.style.display = "none";
+        spawnHearts(heartsToCatch);
+    }, 3000);
+}
+
+// Start game
+spawnHearts(heartsToCatch);
 checkCollision();
 </script>
 
