@@ -3,211 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Quest: The Final Boss</title>
+    <title>Valentine Quest: Level 1</title>
     <style>
-        :root {
-            --bg: #fff5f7;
-            --heart: #ff4d6d;
-            --flower: #ffb703;
-        }
-
         body {
-            background-color: var(--bg);
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
+            background: #fff0f3;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            cursor: crosshair;
         }
 
-        #game-ui {
-            position: fixed;
-            top: 20px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .hp-bar-container {
-            width: 300px;
-            height: 20px;
-            background: #ddd;
-            border: 3px solid #333;
-            border-radius: 10px;
+        #game-board {
+            width: 90vw;
+            height: 80vh;
+            background: white;
+            border: 5px solid #ff4d6d;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        #hp-fill {
-            width: 100%;
-            height: 100%;
-            background: var(--heart);
-            transition: width 0.3s;
+        .ui-layer {
+            padding: 20px;
+            text-align: center;
+            pointer-events: none;
         }
 
-        #status-text {
-            font-weight: bold;
-            color: #333;
-            margin-top: 5px;
-        }
-
-        .game-object {
+        .game-obj {
             position: absolute;
-            font-size: 3rem;
             cursor: pointer;
+            font-size: 50px;
+            transition: all 0.15s ease-out;
             user-select: none;
-            transition: all 0.1s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .label {
-            font-size: 1rem;
-            background: white;
+            font-size: 14px;
+            background: #333;
+            color: white;
             padding: 2px 8px;
-            border-radius: 5px;
-            border: 2px solid #333;
+            border-radius: 4px;
             margin-top: 5px;
         }
 
-        /* Flower animations */
-        .flower-bg {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0.3;
-            z-index: -1;
-            animation: drift 5s infinite linear;
-        }
-
-        @keyframes drift {
-            from { transform: translateY(100vh) rotate(0deg); }
-            to { transform: translateY(-10vh) rotate(360deg); }
-        }
-
-        /* Success Screen */
-        #victory-screen {
+        /* Success Blast */
+        #blast-screen {
             display: none;
             position: fixed;
             inset: 0;
-            background: var(--heart);
-            color: white;
+            background: #ff4d6d;
+            z-index: 1000;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white;
+            text-align: center;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-
-        .confetti {
+        .flower-pop {
             position: absolute;
-            animation: fall 3s infinite;
+            animation: popOut 0.8s ease-out forwards;
         }
 
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(720deg); }
+        @keyframes popOut {
+            0% { transform: scale(0) rotate(0); opacity: 1; }
+            100% { transform: scale(2) rotate(360deg); opacity: 0; }
+        }
+
+        .floating-flower {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.5;
+            animation: drift 10s infinite linear;
+        }
+
+        @keyframes drift {
+            from { transform: translateY(110vh); }
+            to { transform: translateY(-10vh); }
         }
     </style>
 </head>
 <body>
 
-    <div id="game-ui">
-        <h2 id="instruction">QUEST: CATCH MY HEART!</h2>
-        <div class="hp-bar-container"><div id="hp-fill"></div></div>
-        <div id="status-text">BOSS HP: 100% (Valentine's Resistance)</div>
+    <div id="game-board">
+        <div class="ui-layer">
+            <h1 id="main-task" style="color: #ff4d6d;">LEVEL 1: ACCEPT YOUR DESTINY</h1>
+            <p id="sub-task">Score 1 point to win my heart. 🍫</p>
+        </div>
+
+        <div id="no-btn" class="game-obj" style="top: 50%; left: 30%;" onmouseover="dodge()">
+            <span>🥦</span>
+            <div class="label">NO</div>
+        </div>
+
+        <div id="yes-btn" class="game-obj" style="top: 50%; left: 60%;" onclick="win()">
+            <span>💖</span>
+            <div class="label" id="yes-label">YES</div>
+        </div>
     </div>
 
-    <div id="boss" class="game-object" style="top: 50%; left: 30%;" onmouseover="bossDodge()">
-        <span>😈</span>
-        <div class="label" id="boss-label">NO (Invincible)</div>
-    </div>
-
-    <div id="target" class="game-object" style="top: 50%; left: 60%;" onclick="captureHeart()">
-        <span>💖</span>
-        <div class="label">YES</div>
-    </div>
-
-    <div id="victory-screen">
-        <h1 style="font-size: 4rem;">VICTORY! 🎉</h1>
-        <p style="font-size: 2rem;">Reward Unlocked: 1,000,000 Kisses</p>
-        <h2 style="font-size: 5rem;">I LOVE YOU! ❤️</h2>
-        <div style="font-size: 100px;">🍫🌸🌹🍫</div>
+    <div id="blast-screen">
+        <h1 style="font-size: 80px; margin: 0;">I LOVE YOU! ❤️</h1>
+        <p style="font-size: 24px;">You've officially won a lifetime of my annoying jokes.</p>
+        <div style="font-size: 100px; margin-top: 20px;">🌹🍫🌸🍫🌹</div>
+        <button onclick="location.reload()" style="margin-top: 30px; padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer;">Play Again?</button>
     </div>
 
     <script>
-        let hp = 100;
-        const boss = document.getElementById('boss');
-        const target = document.getElementById('target');
-        const hpFill = document.getElementById('hp-fill');
-        const statusText = document.getElementById('status-text');
+        let dodgeCount = 0;
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const yesLabel = document.getElementById('yes-label');
 
-        // Randomly spawn flowers in background
-        for (let i = 0; i < 20; i++) {
-            const f = document.createElement('div');
-            f.className = 'flower-bg';
-            f.innerHTML = ['🌸', '🌹', '🌷', '🌻'][Math.floor(Math.random() * 4)];
-            f.style.left = Math.random() * 100 + 'vw';
-            f.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            f.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(f);
-        }
+        // Background flowers
+        setInterval(() => {
+            const flower = document.createElement('div');
+            flower.className = 'floating-flower';
+            flower.innerHTML = ['🌸', '🌷', '🌹', '🌻'][Math.floor(Math.random() * 4)];
+            flower.style.left = Math.random() * 100 + 'vw';
+            flower.style.fontSize = Math.random() * 20 + 20 + 'px';
+            document.body.appendChild(flower);
+            setTimeout(() => flower.remove(), 10000);
+        }, 500);
 
-        function bossDodge() {
-            // Boss teleports away when hovered
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
-            boss.style.left = x + 'px';
-            boss.style.top = y + 'px';
+        function dodge() {
+            dodgeCount++;
             
-            // Sneaky behavior: The target moves too!
-            moveTarget();
-            
-            const taunts = ["Too slow!", "Not a chance!", "Calculated!", "Try harder!", "Missed me!"];
-            document.getElementById('boss-label').innerText = taunts[Math.floor(Math.random() * taunts.length)];
-        }
+            // Move the NO button
+            const x = Math.random() * 70 + 10;
+            const y = Math.random() * 60 + 20;
+            noBtn.style.left = x + '%';
+            noBtn.style.top = y + '%';
 
-        function moveTarget() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
-            target.style.left = x + 'px';
-            target.style.top = y + 'px';
-        }
-
-        function captureHeart() {
-            hp -= 34; // Takes 3 clicks to "win"
+            // Rigging the game: Every time they try to click NO, 
+            // the YES button gets bigger and follows them.
+            const size = 1 + (dodgeCount * 0.2);
+            yesBtn.style.transform = `scale(${size})`;
             
-            if (hp <= 0) {
-                winGame();
-            } else {
-                hpFill.style.width = hp + '%';
-                statusText.innerText = `BOSS HP: ${hp}% (Almost there!)`;
-                // Flash the screen red
-                document.body.style.backgroundColor = '#ffccd5';
-                setTimeout(() => document.body.style.backgroundColor = '#fff5f7', 100);
-                moveTarget();
+            if (dodgeCount > 3) {
+                yesLabel.innerText = "JUST CLICK ME!";
+                yesBtn.style.left = (x + 15) + '%'; // Yes button starts chasing them
+                yesBtn.style.top = y + '%';
+            }
+            
+            if (dodgeCount > 7) {
+                // Final Form: Yes button covers the screen
+                yesBtn.style.width = "100%";
+                yesBtn.style.height = "100%";
+                yesBtn.style.left = "0";
+                yesBtn.style.top = "0";
+                yesBtn.style.opacity = "0.5";
+                yesLabel.innerText = "THERE IS NO ESCAPE";
             }
         }
 
-        function winGame() {
-            document.getElementById('victory-screen').style.display = 'flex';
+        function win() {
+            // Trigger the blast
+            document.getElementById('blast-screen').style.display = 'flex';
             
-            // Explosion of confetti
-            for (let i = 0; i < 100; i++) {
-                const c = document.createElement('div');
-                c.className = 'confetti';
-                c.innerHTML = ['🍫', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
-                c.style.left = Math.random() * 100 + 'vw';
-                c.style.top = '-5vh';
-                c.style.fontSize = Math.random() * 30 + 10 + 'px';
-                c.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                document.body.appendChild(c);
+            // Flower explosion
+            for(let i=0; i<50; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.className = 'flower-pop';
+                    p.innerHTML = ['🌸', '💖', '🍫', '✨'][Math.floor(Math.random() * 4)];
+                    p.style.left = Math.random() * 100 + 'vw';
+                    p.style.top = Math.random() * 100 + 'vh';
+                    document.body.appendChild(p);
+                }, i * 20);
             }
         }
     </script>
