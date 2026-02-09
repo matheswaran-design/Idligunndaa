@@ -1,70 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Invitation</title>
-    <style>
-        body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: pink;
-            color: darkred;
-            text-align: center;
-            padding: 50px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine's Day Invitation 🌸❤️</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
 
-        h1 {
-            font-size: 3em;
-            animation: heartBeat 1s infinite;
-        }
+    body {
+      background: linear-gradient(to bottom, #ffe6f2, #fff0f5);
+      overflow-x: hidden;
+    }
 
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
+    h1 {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 3em;
+      color: #ff3366;
+      animation: bounce 2s infinite;
+    }
 
-        button {
-            background: red;
-            color: white;
-            font-size: 1.2em;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 30px;
-            transition: transform 0.2s;
-        }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
 
-        button:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
 
-        #message {
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
-    </style>
+    .flowers {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .flowers img {
+      width: 80px;
+      height: 80px;
+      transition: transform 0.3s;
+    }
+
+    .flowers img:hover {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .invite-card {
+      background: #fff0f5;
+      border: 2px dashed #ff66a3;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(255,0,102,0.3);
+      animation: pop 1.5s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .invite-card p {
+      font-size: 1.2em;
+      margin: 15px 0;
+      color: #ff3399;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ff66a3;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: transform 0.2s;
+    }
+
+    .button:hover {
+      transform: scale(1.1);
+      background: #ff3380;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #ff6699;
+    }
+  </style>
 </head>
 <body>
-    <h1>💖 Be My Valentine? 💖</h1>
-    <p>Click the button to see your special Valentine's surprise!</p>
-    <button onclick="showMessage()">Click Me!</button>
-    <div id="message"></div>
 
-    <script>
-        const messages = [
-            "Roses are red, violets are blue, you're invited, and we want YOU! 🌹",
-            "Warning: Love overload ahead! 💘 RSVP ASAP!",
-            "Cupid says: 'Don't miss the fun, or I'll be sad!' 😢",
-            "Chocolate and laughter guaranteed. 🍫😂",
-            "Your presence is required for hugs and giggles! 🤗"
-        ];
+  <h1>💖 Valentine's Day Fun! 💖</h1>
 
-        function showMessage() {
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            document.getElementById('message').innerText = messages[randomIndex];
-            document.body.style.background = `hsl(${Math.random()*360}, 70%, 80%)`; // fun background change
-        }
-    </script>
+  <div class="flowers">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Flower">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Flower">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Flower">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Flower">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Flower">
+  </div>
+
+  <div class="container">
+    <div class="invite-card">
+      <h2>You're Invited! 🎉</h2>
+      <p>Come celebrate Valentine's Day with laughter, love, and a little mischief 😜</p>
+      <p>When: 14th Feb, 7 PM</p>
+      <p>Where: My Cozy Heart 💌</p>
+      <a href="#" class="button">RSVP Now!</a>
+    </div>
+  </div>
+
+  <footer>
+    Made with ❤️ and lots of flowers 🌸🌼
+  </footer>
+
 </body>
 </html>
