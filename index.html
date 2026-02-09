@@ -2,157 +2,150 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Will You Be My Valentine? 💖</title>
-
+<title>Catch My Heart 💖</title>
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Comic Sans MS', cursive, sans-serif;
-        overflow: hidden;
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    font-family: 'Comic Sans MS', cursive;
+}
 
-    .card {
-        background: white;
-        padding: 30px 40px;
-        border-radius: 25px;
-        text-align: center;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        animation: pop 1s ease;
-    }
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
 
-    @keyframes pop {
-        0% { transform: scale(0.5); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
+#player {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 50px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
 
-    h1 {
-        color: #ff4d6d;
-        font-size: 2.5em;
-        margin-bottom: 10px;
-    }
+.heart {
+    position: absolute;
+    font-size: 30px;
+    animation: fall linear;
+}
 
-    p {
-        font-size: 1.2em;
-        color: #555;
-    }
+@keyframes fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
+}
 
-    img {
-        width: 180px;
-        margin: 15px 0;
-        border-radius: 15px;
-    }
+#score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #ff1e56;
+}
 
-    .buttons {
-        margin-top: 20px;
-    }
+#message {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    color: #ff4d6d;
+    text-align: center;
+    display: none;
+}
 
-    button {
-        padding: 12px 25px;
-        font-size: 1.1em;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        margin: 10px;
-        transition: transform 0.2s;
-    }
-
-    #yes {
-        background: #ff4d6d;
-        color: white;
-    }
-
-    #yes:hover {
-        transform: scale(1.1);
-        background: #ff1e56;
-    }
-
-    #no {
-        background: #ccc;
-        color: #333;
-        position: absolute;
-    }
-
-    .heart {
-        position: absolute;
-        color: rgba(255, 0, 80, 0.7);
-        font-size: 20px;
-        animation: float 6s linear infinite;
-    }
-
-    @keyframes float {
-        0% {
-            transform: translateY(100vh) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-10vh) scale(1.5);
-            opacity: 0;
-        }
-    }
 </style>
 </head>
-
 <body>
 
-<div class="card">
-    <h1>💖 Will You Be My Valentine? 💖</h1>
-    <p>You make my heart go 💓 every single day!</p>
-
-    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Cute Gif">
-
-    <div class="buttons">
-        <button id="yes">Yes 💕</button>
-        <button id="no">No 🙈</button>
+<div id="gameContainer">
+    <div id="score">💖 Hearts: 0</div>
+    <div id="player">💌</div>
+    <div id="message">
+        YAY! You caught all hearts! 😍💖<br>
+        Will You Be My Valentine? 💕
+        <br><img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="200">
     </div>
 </div>
 
 <script>
-    // Floating hearts
-    setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.innerHTML = '💖';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.fontSize = Math.random() * 30 + 15 + 'px';
-        document.body.appendChild(heart);
+const player = document.getElementById("player");
+const container = document.getElementById("gameContainer");
+const scoreDisplay = document.getElementById("score");
+const message = document.getElementById("message");
 
-        setTimeout(() => {
+let score = 0;
+let hearts = [];
+const totalHearts = 10;
+
+// Move player with mouse
+document.addEventListener("mousemove", (e) => {
+    player.style.left = e.clientX + "px";
+});
+
+// Create hearts
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * (window.innerWidth - 30) + "px";
+    heart.style.top = "-50px";
+    heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+    heart.innerHTML = "💖";
+    container.appendChild(heart);
+    hearts.push(heart);
+
+    // Remove heart after it falls
+    setTimeout(() => {
+        heart.remove();
+        hearts = hearts.filter(h => h !== heart);
+        createHeart(); // keep hearts coming
+    }, parseFloat(heart.style.animationDuration) * 1000);
+}
+
+// Start hearts
+for (let i = 0; i < totalHearts; i++) {
+    createHeart();
+}
+
+// Check collision
+function checkCollision() {
+    hearts.forEach((heart) => {
+        const heartRect = heart.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+
+        if (!(heartRect.right < playerRect.left ||
+            heartRect.left > playerRect.right ||
+            heartRect.bottom < playerRect.top ||
+            heartRect.top > playerRect.bottom)) {
+            
+            // Heart caught
             heart.remove();
-        }, 6000);
-    }, 300);
+            hearts = hearts.filter(h => h !== heart);
+            score++;
+            scoreDisplay.innerHTML = `💖 Hearts: ${score}`;
 
-    // No button runaway
-    const noBtn = document.getElementById("no");
-    noBtn.addEventListener("mouseover", () => {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 50);
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-    });
+            // Floating emoji effect
+            const emoji = document.createElement("div");
+            emoji.style.position = "absolute";
+            emoji.style.left = heartRect.left + "px";
+            emoji.style.top = heartRect.top + "px";
+            emoji.style.fontSize = "25px";
+            emoji.innerHTML = "✨💕";
+            container.appendChild(emoji);
+            setTimeout(() => emoji.remove(), 1000);
 
-    // Yes button action
-    document.getElementById("yes").addEventListener("click", () => {
-        document.body.innerHTML = `
-            <div style="
-                height:100vh;
-                display:flex;
-                flex-direction:column;
-                justify-content:center;
-                align-items:center;
-                background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-                font-family:'Comic Sans MS',cursive;
-                text-align:center;">
-                <h1 style="color:#ff1e56;font-size:3em;">YAYYYY!!! 💕🥰</h1>
-                <p style="font-size:1.5em;">I’m so happy! 💖💖💖</p>
-                <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="250">
-            </div>
-        `;
+            if (score >= totalHearts) {
+                message.style.display = "block";
+            }
+        }
     });
+    requestAnimationFrame(checkCollision);
+}
+
+checkCollision();
 </script>
 
 </body>
