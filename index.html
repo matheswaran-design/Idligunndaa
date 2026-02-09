@@ -1,148 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentine's Surprise 🌸❤️</title>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Comic Sans MS', cursive, sans-serif; }
-    body {
-      background: linear-gradient(to bottom, #ffe6f2, #fff0f5);
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urgent Inquiry Inside 💌</title>
+    <style>
+        body {
+            background-color: #ffebee;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
 
-    h1 {
-      font-size: 3em;
-      color: #ff3366;
-      animation: bounce 2s infinite;
-      margin-bottom: 40px;
-    }
+        #container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            position: relative;
+            z-index: 10;
+        }
 
-    @keyframes bounce {
-      0%,100%{transform:translateY(0);}
-      50%{transform:translateY(-20px);}
-    }
+        h1 { color: #d32f2f; margin-bottom: 10px; }
+        p { color: #555; font-size: 1.1rem; }
 
-    .invite-card {
-      background: #fff0f5;
-      border: 2px dashed #ff66a3;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255,0,102,0.3);
-      z-index: 10;
-    }
+        .emoji-header { font-size: 4rem; margin-bottom: 10px; }
 
-    .button {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 25px;
-      background: #ff66a3;
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 15px;
-      font-size: 1.2em;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
 
-    .button:hover {
-      transform: scale(1.1);
-      background: #ff3380;
-    }
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-    /* Floating flowers */
-    .flower {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      pointer-events: none;
-      animation: float 6s ease-in-out infinite;
-    }
+        #yesBtn { background-color: #ff4081; color: white; font-weight: bold; }
+        #noBtn { background-color: #9e9e9e; color: white; position: relative; }
 
-    @keyframes float {
-      0%{transform:translateY(0);}
-      50%{transform:translateY(-50px);}
-      100%{transform:translateY(0);}
-    }
+        /* Confetti/Blast effect */
+        .heart {
+            position: absolute;
+            color: #ff4081;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: float 3s linear forwards;
+        }
 
-    /* Video styling */
-    #videoContainer {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      max-width: 800px;
-      z-index: 20;
-      box-shadow: 0 0 30px rgba(255,0,102,0.5);
-      border-radius: 20px;
-      overflow: hidden;
-    }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
 
-    #videoContainer video {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 20px;
-    }
-  </style>
+        #success-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ff4081;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>🌸 Will you be my Valentine? 🌸</h1>
+    <div id="container">
+        <div class="emoji-header">🌸🍫🌸</div>
+        <h1>Will you be my Valentine?</h1>
+        <p>I promise I’m 10% more fun than a box of chocolates and 100% less likely to wilt than these flowers.</p>
+        
+        <div class="btn-container">
+            <button id="yesBtn" onclick="celebrate()">YES!</button>
+            <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
+        </div>
+    </div>
 
-  <div class="invite-card">
-    <button class="button" id="yesBtn">Yes 😍</button>
-    <button class="button" id="noBtn">No 😅</button>
-  </div>
+    <div id="success-screen">
+        <h1 style="font-size: 5rem; color: white;">I LOVE YOU! ❤️</h1>
+        <p style="font-size: 2rem; color: white;">(Best decision you've made all day.)</p>
+        <div style="font-size: 5rem;">🍫🌹🥂🎁</div>
+    </div>
 
-  <div id="videoContainer">
-    <video id="valentineVideo" src="https://www.w3schools.com/html/mov_bbb.mp4" controls autoplay></video>
-  </div>
+    <script>
+        // Make the 'No' button run away
+        function moveNoButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            
+            btn.style.position = 'absolute';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+            
+            // Add a little funny text change
+            const phrases = ["Nice try!", "Try again!", "Nope!", "Wrong way!", "Rude!", "You're clicking too slow!"];
+            btn.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+        }
 
-  <script>
-    const body = document.body;
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn = document.getElementById('noBtn');
-    const videoContainer = document.getElementById('videoContainer');
-
-    // If user clicks NO, make the button move randomly
-    noBtn.addEventListener('mouseenter', () => {
-      noBtn.style.transform = `translate(${Math.random()*150 - 75}px, ${Math.random()*50 - 25}px)`;
-    });
-
-    // Function to create floating flowers
-    function createFlower() {
-      const flower = document.createElement('img');
-      flower.src = 'https://cdn-icons-png.flaticon.com/512/616/616408.png';
-      flower.className = 'flower';
-      flower.style.left = Math.random() * window.innerWidth + 'px';
-      flower.style.animationDuration = (3 + Math.random() * 3) + 's';
-      body.appendChild(flower);
-      setTimeout(() => body.removeChild(flower), 6000);
-    }
-
-    // Continuously generate flowers after click Yes
-    let flowerInterval;
-    yesBtn.addEventListener('click', () => {
-      // Show video
-      videoContainer.style.display = 'block';
-
-      // Remove invite card
-      yesBtn.parentElement.style.display = 'none';
-
-      // Start flower animation
-      flowerInterval = setInterval(createFlower, 300);
-    });
-  </script>
-
+        // The "Yes" Blast
+        function celebrate() {
+            document.getElementById('success-screen').style.display = 'flex';
+            
+            // Create heart confetti
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '100vh';
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    // Remove heart after animation
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 50);
+            }
+        }
+    </script>
 </body>
 </html>
