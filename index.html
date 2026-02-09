@@ -1,185 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Quest: Level 1</title>
-    <style>
-        body {
-            margin: 0;
-            background: #fff0f3;
-            font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<meta charset="UTF-8">
+<title>Will You Be My Valentine? 💖</title>
 
-        #game-board {
-            width: 90vw;
-            height: 80vh;
-            background: white;
-            border: 5px solid #ff4d6d;
-            border-radius: 20px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        overflow: hidden;
+    }
 
-        .ui-layer {
-            padding: 20px;
-            text-align: center;
-            pointer-events: none;
-        }
+    .card {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 25px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        animation: pop 1s ease;
+    }
 
-        .game-obj {
-            position: absolute;
-            cursor: pointer;
-            font-size: 50px;
-            transition: all 0.15s ease-out;
-            user-select: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    @keyframes pop {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
 
-        .label {
-            font-size: 14px;
-            background: #333;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
+    h1 {
+        color: #ff4d6d;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
 
-        /* Success Blast */
-        #blast-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #ff4d6d;
-            z-index: 1000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-        }
+    p {
+        font-size: 1.2em;
+        color: #555;
+    }
 
-        .flower-pop {
-            position: absolute;
-            animation: popOut 0.8s ease-out forwards;
-        }
+    img {
+        width: 180px;
+        margin: 15px 0;
+        border-radius: 15px;
+    }
 
-        @keyframes popOut {
-            0% { transform: scale(0) rotate(0); opacity: 1; }
-            100% { transform: scale(2) rotate(360deg); opacity: 0; }
-        }
+    .buttons {
+        margin-top: 20px;
+    }
 
-        .floating-flower {
-            position: absolute;
-            z-index: -1;
-            opacity: 0.5;
-            animation: drift 10s infinite linear;
-        }
+    button {
+        padding: 12px 25px;
+        font-size: 1.1em;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin: 10px;
+        transition: transform 0.2s;
+    }
 
-        @keyframes drift {
-            from { transform: translateY(110vh); }
-            to { transform: translateY(-10vh); }
+    #yes {
+        background: #ff4d6d;
+        color: white;
+    }
+
+    #yes:hover {
+        transform: scale(1.1);
+        background: #ff1e56;
+    }
+
+    #no {
+        background: #ccc;
+        color: #333;
+        position: absolute;
+    }
+
+    .heart {
+        position: absolute;
+        color: rgba(255, 0, 80, 0.7);
+        font-size: 20px;
+        animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) scale(1);
+            opacity: 1;
         }
-    </style>
+        100% {
+            transform: translateY(-10vh) scale(1.5);
+            opacity: 0;
+        }
+    }
+</style>
 </head>
+
 <body>
 
-    <div id="game-board">
-        <div class="ui-layer">
-            <h1 id="main-task" style="color: #ff4d6d;">LEVEL 1: ACCEPT YOUR DESTINY</h1>
-            <p id="sub-task">Score 1 point to win my heart. 🍫</p>
-        </div>
+<div class="card">
+    <h1>💖 Will You Be My Valentine? 💖</h1>
+    <p>You make my heart go 💓 every single day!</p>
 
-        <div id="no-btn" class="game-obj" style="top: 50%; left: 30%;" onmouseover="dodge()">
-            <span>🥦</span>
-            <div class="label">NO</div>
-        </div>
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Cute Gif">
 
-        <div id="yes-btn" class="game-obj" style="top: 50%; left: 60%;" onclick="win()">
-            <span>💖</span>
-            <div class="label" id="yes-label">YES</div>
-        </div>
+    <div class="buttons">
+        <button id="yes">Yes 💕</button>
+        <button id="no">No 🙈</button>
     </div>
+</div>
 
-    <div id="blast-screen">
-        <h1 style="font-size: 80px; margin: 0;">I LOVE YOU! ❤️</h1>
-        <p style="font-size: 24px;">You've officially won a lifetime of my annoying jokes.</p>
-        <div style="font-size: 100px; margin-top: 20px;">🌹🍫🌸🍫🌹</div>
-        <button onclick="location.reload()" style="margin-top: 30px; padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer;">Play Again?</button>
-    </div>
+<script>
+    // Floating hearts
+    setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '💖';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = Math.random() * 30 + 15 + 'px';
+        document.body.appendChild(heart);
 
-    <script>
-        let dodgeCount = 0;
-        const noBtn = document.getElementById('no-btn');
-        const yesBtn = document.getElementById('yes-btn');
-        const yesLabel = document.getElementById('yes-label');
+        setTimeout(() => {
+            heart.remove();
+        }, 6000);
+    }, 300);
 
-        // Background flowers
-        setInterval(() => {
-            const flower = document.createElement('div');
-            flower.className = 'floating-flower';
-            flower.innerHTML = ['🌸', '🌷', '🌹', '🌻'][Math.floor(Math.random() * 4)];
-            flower.style.left = Math.random() * 100 + 'vw';
-            flower.style.fontSize = Math.random() * 20 + 20 + 'px';
-            document.body.appendChild(flower);
-            setTimeout(() => flower.remove(), 10000);
-        }, 500);
+    // No button runaway
+    const noBtn = document.getElementById("no");
+    noBtn.addEventListener("mouseover", () => {
+        const x = Math.random() * (window.innerWidth - 100);
+        const y = Math.random() * (window.innerHeight - 50);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+    });
 
-        function dodge() {
-            dodgeCount++;
-            
-            // Move the NO button
-            const x = Math.random() * 70 + 10;
-            const y = Math.random() * 60 + 20;
-            noBtn.style.left = x + '%';
-            noBtn.style.top = y + '%';
+    // Yes button action
+    document.getElementById("yes").addEventListener("click", () => {
+        document.body.innerHTML = `
+            <div style="
+                height:100vh;
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                align-items:center;
+                background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+                font-family:'Comic Sans MS',cursive;
+                text-align:center;">
+                <h1 style="color:#ff1e56;font-size:3em;">YAYYYY!!! 💕🥰</h1>
+                <p style="font-size:1.5em;">I’m so happy! 💖💖💖</p>
+                <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="250">
+            </div>
+        `;
+    });
+</script>
 
-            // Rigging the game: Every time they try to click NO, 
-            // the YES button gets bigger and follows them.
-            const size = 1 + (dodgeCount * 0.2);
-            yesBtn.style.transform = `scale(${size})`;
-            
-            if (dodgeCount > 3) {
-                yesLabel.innerText = "JUST CLICK ME!";
-                yesBtn.style.left = (x + 15) + '%'; // Yes button starts chasing them
-                yesBtn.style.top = y + '%';
-            }
-            
-            if (dodgeCount > 7) {
-                // Final Form: Yes button covers the screen
-                yesBtn.style.width = "100%";
-                yesBtn.style.height = "100%";
-                yesBtn.style.left = "0";
-                yesBtn.style.top = "0";
-                yesBtn.style.opacity = "0.5";
-                yesLabel.innerText = "THERE IS NO ESCAPE";
-            }
-        }
-
-        function win() {
-            // Trigger the blast
-            document.getElementById('blast-screen').style.display = 'flex';
-            
-            // Flower explosion
-            for(let i=0; i<50; i++) {
-                setTimeout(() => {
-                    const p = document.createElement('div');
-                    p.className = 'flower-pop';
-                    p.innerHTML = ['🌸', '💖', '🍫', '✨'][Math.floor(Math.random() * 4)];
-                    p.style.left = Math.random() * 100 + 'vw';
-                    p.style.top = Math.random() * 100 + 'vh';
-                    document.body.appendChild(p);
-                }, i * 20);
-            }
-        }
-    </script>
 </body>
 </html>
