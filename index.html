@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentine's Day Surprise 🌸❤️</title>
+  <title>Valentine's Surprise 🌸❤️</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family: 'Comic Sans MS', cursive, sans-serif; }
     body {
@@ -21,25 +21,12 @@
       font-size: 3em;
       color: #ff3366;
       animation: bounce 2s infinite;
+      margin-bottom: 40px;
     }
 
     @keyframes bounce {
       0%,100%{transform:translateY(0);}
       50%{transform:translateY(-20px);}
-    }
-
-    .flower {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      pointer-events: none;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%{transform:translateY(0);}
-      50%{transform:translateY(-50px);}
-      100%{transform:translateY(0);}
     }
 
     .invite-card {
@@ -53,7 +40,7 @@
 
     .button {
       display: inline-block;
-      margin-top: 20px;
+      margin: 10px;
       padding: 12px 25px;
       background: #ff66a3;
       color: white;
@@ -70,44 +57,42 @@
       background: #ff3380;
     }
 
-    /* Dog dance */
-    #dog {
+    /* Floating flowers */
+    .flower {
       position: absolute;
-      bottom: 20px;
-      width: 150px;
+      width: 50px;
+      height: 50px;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%{transform:translateY(0);}
+      50%{transform:translateY(-50px);}
+      100%{transform:translateY(0);}
+    }
+
+    /* Video styling */
+    #videoContainer {
       display: none;
-      animation: dance 1s infinite alternate;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 800px;
+      z-index: 20;
+      box-shadow: 0 0 30px rgba(255,0,102,0.5);
+      border-radius: 20px;
+      overflow: hidden;
     }
 
-    @keyframes dance {
-      0%{transform: translateX(0);}
-      50%{transform: translateX(-20px) rotate(-10deg);}
-      100%{transform: translateX(20px) rotate(10deg);}
+    #videoContainer video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 20px;
     }
-
-    /* Confetti */
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: pink;
-      opacity: 0.8;
-      top: -10px;
-      animation: confetti-fall 3s linear forwards;
-    }
-
-    @keyframes confetti-fall {
-      0% {transform: translateY(0) rotate(0deg);}
-      100% {transform: translateY(600px) rotate(360deg);}
-    }
-
-    #love-text {
-      font-size: 2em;
-      color: #ff3366;
-      margin-top: 10px;
-      display: none;
-    }
-
   </style>
 </head>
 <body>
@@ -115,18 +100,24 @@
   <h1>🌸 Will you be my Valentine? 🌸</h1>
 
   <div class="invite-card">
-    <button class="button" id="yesBtn">Yes, I will! 😍</button>
+    <button class="button" id="yesBtn">Yes 😍</button>
+    <button class="button" id="noBtn">No 😅</button>
   </div>
 
-  <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" id="dog" alt="Cute dog">
-
-  <div id="love-text">I love you ❤️</div>
+  <div id="videoContainer">
+    <video id="valentineVideo" src="https://www.w3schools.com/html/mov_bbb.mp4" controls autoplay></video>
+  </div>
 
   <script>
     const body = document.body;
     const yesBtn = document.getElementById('yesBtn');
-    const dog = document.getElementById('dog');
-    const loveText = document.getElementById('love-text');
+    const noBtn = document.getElementById('noBtn');
+    const videoContainer = document.getElementById('videoContainer');
+
+    // If user clicks NO, make the button move randomly
+    noBtn.addEventListener('mouseenter', () => {
+      noBtn.style.transform = `translate(${Math.random()*150 - 75}px, ${Math.random()*50 - 25}px)`;
+    });
 
     // Function to create floating flowers
     function createFlower() {
@@ -139,29 +130,17 @@
       setTimeout(() => body.removeChild(flower), 6000);
     }
 
-    // Continuously generate flowers
-    setInterval(createFlower, 500);
-
-    // Confetti effect
-    function createConfetti() {
-      for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
-        body.appendChild(confetti);
-        setTimeout(() => body.removeChild(confetti), 4000);
-      }
-    }
-
-    // When user clicks Yes
+    // Continuously generate flowers after click Yes
+    let flowerInterval;
     yesBtn.addEventListener('click', () => {
-      createConfetti();
-      dog.style.display = 'block';
-      loveText.style.display = 'block';
-      yesBtn.disabled = true;
-      yesBtn.style.opacity = 0.5;
+      // Show video
+      videoContainer.style.display = 'block';
+
+      // Remove invite card
+      yesBtn.parentElement.style.display = 'none';
+
+      // Start flower animation
+      flowerInterval = setInterval(createFlower, 300);
     });
   </script>
 
