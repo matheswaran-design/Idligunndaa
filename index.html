@@ -1,210 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine Heart Catch Game 💖</title>
-<style>
-body {
-    margin: 0;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    font-family: 'Comic Sans MS', cursive;
-}
+  <meta charset="UTF-8">
+  <title>Be My Valentine 💘</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow: hidden;
+    }
 
-#gameContainer {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-}
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      animation: popIn 1s ease;
+      z-index: 2;
+    }
 
-#player {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 50px;
-    touch-action: none;
-    transition: transform 0.1s;
-}
+    h1 {
+      color: #ff4d6d;
+      font-size: 2.2rem;
+    }
 
-.heart, .trickHeart {
-    position: absolute;
-    font-size: 30px;
-    animation: fall linear;
-}
+    p {
+      font-size: 1.1rem;
+      color: #555;
+    }
 
-@keyframes fall {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(100vh); }
-}
+    .buttons {
+      margin-top: 30px;
+      position: relative;
+      height: 80px;
+    }
 
-#score, #levelDisplay {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 22px;
-    color: #ff1e56;
-}
+    button {
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: absolute;
+    }
 
-#levelDisplay {
-    left: auto;
-    right: 20px;
-}
+    #yesBtn {
+      background: #ff4d6d;
+      color: white;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-#message {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-    color: #ff4d6d;
-    text-align: center;
-    display: none;
-}
+    #yesBtn:hover {
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 10px 20px rgba(255,77,109,0.4);
+    }
 
-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 20px;
-    background: #ff4d6d;
-    color: white;
-    cursor: pointer;
-    margin-top: 15px;
-}
-</style>
+    #noBtn {
+      background: #ccc;
+      color: #333;
+      left: 10%;
+    }
+
+    .message {
+      font-size: 1.5rem;
+      color: #ff4d6d;
+      margin-top: 20px;
+      display: none;
+      animation: popIn 0.6s ease;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
 
-<div id="gameContainer">
-    <div id="score">💖 Hearts: 0</div>
-    <div id="levelDisplay">Level: 1</div>
-    <div id="player">💌</div>
-    <div id="message"></div>
-</div>
+  <div class="card">
+    <h1>💖 Will you be my Valentine, dear? 💖</h1>
+    <p>You only have one correct choice 😌</p>
 
-<script>
-const container = document.getElementById("gameContainer");
-const player = document.getElementById("player");
-const scoreDisplay = document.getElementById("score");
-const levelDisplay = document.getElementById("levelDisplay");
-const message = document.getElementById("message");
+    <div class="buttons">
+      <button id="yesBtn">Yes 💕</button>
+      <button id="noBtn">No 🙄</button>
+    </div>
 
-let score = 0;
-let level = 1;
-let hearts = [];
-let heartsToCatch = 5; // hearts per level
-let trickChance = 0.2; // 20% hearts are trick hearts
-let heartSpeed = 5; // base speed in seconds
+    <div class="message" id="message">
+      YAYYY!! 💘💘💘  
+      I knew you’d say YES 😍  
+      Happy Valentine’s Day 💝
+    </div>
+  </div>
 
-// Move player with touch or mouse
-function movePlayer(x) {
-    const maxX = window.innerWidth - 50;
-    const newX = Math.min(Math.max(x, 25), maxX);
-    player.style.left = newX + "px";
-}
-document.addEventListener("mousemove", (e) => movePlayer(e.clientX));
-document.addEventListener("touchmove", (e) => {
-    movePlayer(e.touches[0].clientX);
-});
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
 
-// Create a heart
-function createHeart() {
-    const heart = document.createElement("div");
-    const isTrick = Math.random() < trickChance;
-    heart.classList.add(isTrick ? "trickHeart" : "heart");
-    heart.innerHTML = isTrick ? "💔" : "💖";
-    heart.style.left = Math.random() * (window.innerWidth - 30) + "px";
-    heart.style.top = "-50px";
-    const duration = heartSpeed + Math.random() * 3;
-    heart.style.animationDuration = duration + "s";
-
-    container.appendChild(heart);
-    hearts.push(heart);
-
-    setTimeout(() => {
-        heart.remove();
-        hearts = hearts.filter(h => h !== heart);
-        if (!isTrick) createHeart();
-    }, duration * 1000);
-}
-
-// Spawn hearts per level
-function spawnHearts(count) {
-    for (let i = 0; i < count; i++) createHeart();
-}
-
-// Collision detection
-function checkCollision() {
-    hearts.forEach((heart) => {
-        const heartRect = heart.getBoundingClientRect();
-        const playerRect = player.getBoundingClientRect();
-
-        if (!(heartRect.right < playerRect.left ||
-            heartRect.left > playerRect.right ||
-            heartRect.bottom < playerRect.top ||
-            heartRect.top > playerRect.bottom)) {
-
-            if (heart.classList.contains("trickHeart")) {
-                // Trick heart disappears
-                heart.remove();
-                hearts = hearts.filter(h => h !== heart);
-                return;
-            }
-
-            // Heart caught
-            heart.remove();
-            hearts = hearts.filter(h => h !== heart);
-            score++;
-            scoreDisplay.innerHTML = `💖 Hearts: ${score}`;
-
-            // Floating emojis
-            const emoji = document.createElement("div");
-            emoji.style.position = "absolute";
-            emoji.style.left = heartRect.left + "px";
-            emoji.style.top = heartRect.top + "px";
-            emoji.style.fontSize = "25px";
-            emoji.innerHTML = "✨💕";
-            container.appendChild(emoji);
-            setTimeout(() => emoji.remove(), 1000);
-
-            if (score >= heartsToCatch) {
-                nextLevel();
-            }
-        }
+    noBtn.addEventListener("mouseover", () => {
+      const x = Math.random() * 300 - 150;
+      const y = Math.random() * 100 - 50;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
     });
-    requestAnimationFrame(checkCollision);
-}
 
-// Level up
-function nextLevel() {
-    hearts.forEach(h => h.remove());
-    hearts = [];
-    level++;
-    levelDisplay.innerHTML = `Level: ${level}`;
-    score = 0;
-    scoreDisplay.innerHTML = `💖 Hearts: 0`;
-    heartsToCatch += 2;
-    heartSpeed = Math.max(2, heartSpeed - 0.5);
-    trickChance = Math.min(0.5, trickChance + 0.05);
+    yesBtn.addEventListener("click", () => {
+      noBtn.style.display = "none";
+      message.style.display = "block";
+      yesBtn.style.display = "none";
+    });
 
-    // Show celebration
-    message.innerHTML = `🎉 Level ${level-1} Complete! 🎉<br>
-        <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="200"><br>
-        Get ready for next level!`;
-    message.style.display = "block";
+    // Create floating hearts
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 15 + "px";
+      document.body.appendChild(heart);
 
-    setTimeout(() => {
-        message.style.display = "none";
-        spawnHearts(heartsToCatch);
-    }, 3000);
-}
-
-// Start game
-spawnHearts(heartsToCatch);
-checkCollision();
-</script>
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }, 500);
+  </script>
 
 </body>
 </html>
