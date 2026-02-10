@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine's Day 💙</title>
+<title>Valentine 💙</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
+
 body{
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#1e3c72,#2a5298,#7aa8d1);
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     min-height:100vh;
     display:flex;
     justify-content:center;
@@ -16,66 +18,97 @@ body{
     overflow:hidden;
 }
 
+/* animated background glow */
+body::before{
+    content:"";
+    position:absolute;
+    inset:-50%;
+    background:radial-gradient(circle at 30% 30%,rgba(255,100,180,.25),transparent 50%),
+               radial-gradient(circle at 70% 70%,rgba(100,180,255,.25),transparent 50%);
+    animation:floatBG 12s linear infinite;
+}
+
+@keyframes floatBG{
+    0%{transform:translate(0,0)}
+    50%{transform:translate(6%,6%)}
+    100%{transform:translate(0,0)}
+}
+
 .container{
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(12px);
-    padding:50px;
-    border-radius:30px;
-    max-width:500px;
+    position:relative;
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(15px);
+    border-radius:28px;
+    padding:50px 45px;
+    max-width:520px;
     width:100%;
     text-align:center;
     color:white;
-    box-shadow:0 15px 40px rgba(0,0,0,.4);
-    animation:fadeIn 1s ease;
+    box-shadow:0 25px 60px rgba(0,0,0,.45);
+    animation:fadeIn .8s ease;
 }
 
 @keyframes fadeIn{
-    from{opacity:0; transform:scale(.8)}
+    from{opacity:0; transform:scale(.85)}
     to{opacity:1; transform:scale(1)}
 }
 
-h1{font-size:2.5rem}
-.message{font-size:1.2rem;margin:20px 0}
+h1{
+    font-size:2.6rem;
+    margin-bottom:15px;
+}
+
+.message{
+    font-size:1.2rem;
+    opacity:.9;
+    margin-bottom:35px;
+}
+
+.buttons{
+    position:relative;
+    height:100px;
+}
 
 .btn{
-    padding:14px 30px;
-    border-radius:50px;
+    padding:15px 36px;
+    border-radius:60px;
     border:none;
     font-size:1.1rem;
     font-weight:600;
     cursor:pointer;
-    margin:10px;
-    transition:.3s;
-}
-
-.yes-btn{background:#ff4f8b;color:white}
-.no-btn{background:#4ecdc4;color:white}
-
-.btn:hover{transform:scale(1.08)}
-
-.game-area{
-    display:none;
-    margin-top:30px;
-    position:relative;
-    height:250px;
-    border-radius:20px;
-    border:2px dashed rgba(255,255,255,.4);
-    overflow:hidden;
-}
-
-.heart{
+    transition:.25s ease;
     position:absolute;
-    font-size:2rem;
-    animation:fall 3s linear;
+    user-select:none;
 }
 
-@keyframes fall{
-    from{top:-40px}
-    to{top:100%}
+.yes{
+    background:linear-gradient(135deg,#ff4f8b,#ff2f6d);
+    color:white;
+    left:50%;
+    transform:translateX(-120%);
 }
 
-.response{display:none; animation:fadeIn .8s ease}
+.no{
+    background:linear-gradient(135deg,#4ecdc4,#44a5c2);
+    color:white;
+    left:50%;
+    transform:translateX(20%);
+}
 
+.yes:hover{
+    transform:translateX(-120%) scale(1.1);
+}
+
+.response{
+    display:none;
+    animation:pop .6s ease;
+}
+
+@keyframes pop{
+    0%{opacity:0;transform:scale(.7)}
+    70%{transform:scale(1.05)}
+    100%{opacity:1;transform:scale(1)}
+}
 </style>
 </head>
 
@@ -84,79 +117,46 @@ h1{font-size:2.5rem}
 <div class="container">
 
 <div id="main">
-    <h1>💙 Will You Be My Valentine? 💙</h1>
+    <h1>Will You Be My Valentine? 💙</h1>
+    <p class="message">Try clicking NO 😏 (if you can)</p>
 
-    <div class="message">
-        You're cooler than a chocolate in the freezer 🍫❄️  
-        <br>Catch 5 hearts to unlock my question 💕
+    <div class="buttons">
+        <button class="btn yes" id="yesBtn">❤️ YES ❤️</button>
+        <button class="btn no" id="noBtn">😜 NO 😜</button>
     </div>
-
-    <button class="btn yes-btn" onclick="startGame()">🎮 Play Game</button>
-</div>
-
-<div class="game-area" id="game">
-    <h3>Catch the Hearts 💕</h3>
-    <p>Score: <span id="score">0</span> / 5</p>
-</div>
-
-<div class="response" id="final">
-    <h1>💙 Will You Be My Valentine? 💙</h1>
-    <button class="btn yes-btn" onclick="yes()">❤️ YES ❤️</button>
-    <button class="btn no-btn" onclick="no()">😜 NO 😜</button>
 </div>
 
 <div class="response" id="yesResponse">
-    <h1>🎉 YAYYYYY 🎉</h1>
-    <p class="message">You just made my heart explode 💙💕</p>
-</div>
-
-<div class="response" id="noResponse">
-    <h1>😭 Awwww 😭</h1>
-    <p class="message">Okay but I’ll still bring chocolates 🍫😜</p>
+    <h1>Yessss 💙</h1>
+    <p class="message">See? You never had a choice 😌</p>
 </div>
 
 </div>
 
 <script>
-let score = 0;
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const main = document.getElementById("main");
+const yesResponse = document.getElementById("yesResponse");
 
-function startGame(){
-    document.getElementById("main").style.display="none";
-    document.getElementById("game").style.display="block";
+let scale = 1;
 
-    let interval = setInterval(createHeart,700);
+function moveNo(){
+    const x = Math.random() * 260 - 130;
+    const y = Math.random() * 80 - 40;
+    noBtn.style.transform = `translate(${x}px,${y}px)`;
 
-    function createHeart(){
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "💖";
-        heart.style.left = Math.random()*90+"%";
-        document.getElementById("game").appendChild(heart);
-
-        heart.onclick = () => {
-            score++;
-            document.getElementById("score").innerText = score;
-            heart.remove();
-
-            if(score >= 5){
-                clearInterval(interval);
-                document.getElementById("game").style.display="none";
-                document.getElementById("final").style.display="block";
-            }
-        }
-
-        setTimeout(()=>heart.remove(),3000);
-    }
+    scale += .05;
+    yesBtn.style.transform = `translateX(-120%) scale(${scale})`;
 }
 
-function yes(){
-    document.getElementById("final").style.display="none";
-    document.getElementById("yesResponse").style.display="block";
-}
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("click", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
-function no(){
-    document.getElementById("final").style.display="none";
-    document.getElementById("noResponse").style.display="block";
+yesBtn.onclick = () => {
+    main.style.display="none";
+    yesResponse.style.display="block";
 }
 </script>
 
